@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blueorgreenauthgateway
+  labels:
+    app: blueorgreenauthgateway
+spec:
+  rules:
+  - host: blueorgreenauthgateway-eduk8s-labs-w01-s027.s1tour-prod-c9040c6.tanzu-labs.esp.vmware.com
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: blueorgreenauthgateway
+            port: 
+              number: 80

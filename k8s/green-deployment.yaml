@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: blueorgreen
+    hint: nonpremium
+  name: green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blueorgreen
+      hint: nonpremium
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: blueorgreen
+        hint: nonpremium
+    spec:
+      containers:
+      - image: eduk8s-labs-w01-s027-registry.s1tour-prod-c9040c6.tanzu-labs.esp.vmware.com/color-app/blueorgreenservice
+        name: blueorgreenservice
+        resources: {}
+        voludmeMounts:
+          - name: config-volume
+            mountPath: /workspace/config
+        readinessProbe:
+          initialDelaySeconds: 30
+          httpGet:
+            port: 8080
+            path: /actuator/health/readiness
+        livenessProbe:
+          initialDelaySeconds: 30
+          httpGet:
+            port: 8080
+            path: /actuator/health/liveness
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: 'blueorgreen,green'
+      volumes:
+        - name: config-volume
+          projected:
+            sources:
+              - configMap:
+                  name: application-config
+              - configMap:
+                  name: blueorgreen-config
+status: {}

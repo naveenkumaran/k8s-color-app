@@ -1,0 +1,36 @@
+apiVersion: v1
+data:
+  application.yml: |
+    eureka:
+      client.serviceUrl.defaultZone: http://localhost:8761/eureka/
+      instance:
+        leaseRenewalIntervalInSeconds: 10
+        metadataMap.instanceId: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+    server.shutdown: graceful
+    spring:
+      lifecycle.timeout-per-shutdown-phase: 20s
+      cloud:
+        kubernetes:
+          discovery:
+            enabled: false
+          enabled: false
+    management:
+      endpoints.web.exposure.include: "*"
+      endpoint.shutdown.enabled: true
+    ---
+    spring:
+      config:
+        activate:
+          on-cloud-platform: "kubernetes"
+      cloud:
+        kubernetes:
+          discovery:
+            enabled: true
+          enabled: true
+    eureka:
+      client:
+        enabled: false
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: application-config

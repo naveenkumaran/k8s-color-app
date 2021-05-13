@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: blueorgreenauthgateway
+  name: blueorgreenauthgateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blueorgreenauthgateway
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: blueorgreenauthgateway
+    spec:
+      containers:
+      - image: eduk8s-labs-w01-s027-registry.s1tour-prod-c9040c6.tanzu-labs.esp.vmware.com/color-app/authgateway
+        name: authgateway
+        resources: {}
+        volumeMounts:
+          - name: config-volume
+            mountPath: /workspace/config
+        readinessProbe:
+          initialDelaySeconds: 30
+          httpGet:
+            port: 8080
+            path: /actuator/health/readiness
+        livenessProbe:
+          initialDelaySeconds: 30
+          httpGet:
+            port: 8080
+            path: /actuator/health/liveness
+      volumes:
+        - name: config-volume
+          configMap:
+            name: application-config
+status: {}

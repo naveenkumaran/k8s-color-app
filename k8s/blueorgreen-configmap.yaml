@@ -1,0 +1,38 @@
+apiVersion: v1
+data:
+  application-blueorgreen.yml: |
+    server.port: 7070
+    eureka.instance.metadataMap.hint: nonpremium
+
+    ---
+    spring.config.activate.on-profile: "blue"
+    color: blue
+    server.port: 8181
+
+    ---
+    spring.config.activate.on-profile: "green"
+    color: green
+    server.port: 7070
+
+    ---
+    spring.config.activate.on-profile: "slowgreen"
+    color: green
+    slow: true
+    server.port: 6060
+
+    ---
+    spring.config.activate.on-profile: "yellow"
+    color: yellow
+    server.port: 8282
+    eureka.instance.metadataMap.hint: premium
+    ---
+    spring:
+      config:
+        activate:
+          on-cloud-platform: "kubernetes"
+    server:
+      port: 8080
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: blueorgreen-config
